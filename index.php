@@ -14,18 +14,30 @@
  * @link      http://www.reseaucerta.org Contexte « Laboratoire GSB »
  */
 
-require_once 'includes/fct.inc.php';
-require_once 'includes/class.pdogsb.inc.php';
+require 'includes/fct.inc.php';
+require 'includes/class.pdogsb.inc.php';
 session_start();
 $pdo = PdoGsb::getPdoGsb();
 $estConnecte = estConnecte();
-require 'vues/v_entete.php';
+
+    
+if (ISSET($_SESSION["statut"])){
+    switch ($_SESSION["statut"]){
+        case 0:
+            require 'vues/v_entete.php';
+            break;
+        case 1:
+            require 'vues/v_enteteComptable.php';
+            break;
+    }
+} 
 $uc = filter_input(INPUT_GET, 'uc', FILTER_SANITIZE_STRING);
 if ($uc && !$estConnecte) {
     $uc = 'connexion';
 } elseif (empty($uc)) {
     $uc = 'accueil';
 }
+
 switch ($uc) {
 case 'connexion':
     include 'controleurs/c_connexion.php';
@@ -38,6 +50,12 @@ case 'gererFrais':
     break;
 case 'etatFrais':
     include 'controleurs/c_etatFrais.php';
+    break;
+case 'validerFrais':
+    include 'controleurs/c_validerFrais.php';
+    break;
+case 'suivreFrais' : 
+    include 'controleurs/c_suivreFrais.php';
     break;
 case 'deconnexion':
     include 'controleurs/c_deconnexion.php';
